@@ -6,6 +6,8 @@ const {
     getDbRecipes,
     getDbRecipesByName,
     getApiRecipesByName,
+    getDbRecipeById,
+    getApiRecipeById,
 } = require("../services/recipes_services");
 
 const router = express();
@@ -67,10 +69,35 @@ router.get("/", async(req,res) => {
         }
     }
     catch(e) {
-        console.log(e);
         res.status(400).send(e.message);
     }
 })
+
+router.get("/:id", async(req, res) => {
+    const regexId = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+    let { id } = req.params;
+    let recipe;
+
+    try {
+        if(regexId.test(id)){
+            console.log("entre al if")
+            recipe = await getDbRecipeById(id);
+            if(!recipe) throw new Error("No se ha encontrado la receta");
+        }
+        else {
+            console.log("entre al else")
+            recipe = await getApiRecipeById(id);
+            if(!recipe) throw new Error("No se ha encontrado la receta");
+        }
+
+        res.status(200).json(recipe)  
+    }
+    catch(e) {
+        console.log(e)
+        res.status(400).send(e.message);
+    }  
+});
+    
 
 
 module.exports = router;
