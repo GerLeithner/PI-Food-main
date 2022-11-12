@@ -1,18 +1,28 @@
-import React, { useEffect } from "react";
-// import { state, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getRecipes, getDiets } from "../actions";
 import { NavLink } from "react-router-dom";
 import Recipe from "./Recipe";
+import Paged from "./Paged";
 
 
 
 export default function Home() {
 
     const dispatch = useDispatch(); // reemplaza mapDispatch to props
-    
+
     const allRecipes = useSelector(state => state.recipes); // reemplaza mapStateToProps
-    const diets = useSelector(state => state.diets);
+    const diets = useSelector(state => state.diets); // reemplaza mapStateToProps
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [recipesXPage, setRecipesXPage] = useState(9);
+    const indexLastRecipe = currentPage * recipesXPage;
+    const indexFirstRecipe = indexLastRecipe - recipesXPage;
+    const currentRecipes = allRecipes.slice(indexFirstRecipe, indexLastRecipe);
+
+    const paged = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    }
 
     // al montarse el componente debe renderizar las recetas traidas del estado global
     useEffect(() => {
@@ -30,7 +40,7 @@ export default function Home() {
 
     return (
         <div>
-            <h1>Foodnacular</h1>
+            <h1>Foodstacular</h1>
             <NavLink to="/recipe">Crear Receta</NavLink>
             <button onClick={e => handleClick(e)}>Recargar las recetas</button>
             <div>
@@ -46,8 +56,8 @@ export default function Home() {
                 <label>Tipo de Dieta:</label>
                 <select>
                 {   
-                    diets.map(diet => {
-                        return <option value={diet.name}>{diet.name}</option>
+                    diets && diets.map(diet => {
+                        return <option value={diet.name} key={diet.id}>{diet.name}</option>
                     })
                 }
                 </select>
@@ -58,10 +68,22 @@ export default function Home() {
                     <option>Existentes</option>
                 </select>
             </div>
+            <Paged
+                recipesXPage={recipesXPage}
+                allRecipesNumber={allRecipes.length}
+                paged={paged}
+            />
             <div>
             {
-                allRecipes && allRecipes.map(r => {
-                    return <Recipe name={r.name} diets={r.diets} img={r.img}/>
+                currentRecipes && currentRecipes.map(r => {
+                    return (<Recipe
+                        key={r.id}
+                        id={r.id}
+                        name={r.name}
+                        diets={r.diets}
+                        dishTypes={r.dishTypes} 
+                        img={r.image} 
+                    />)
                 })
             }
             </div>

@@ -16,20 +16,22 @@ router.use(express.json());
 router.post("/", async(req, res) => {
 
     try {
-        let { name, summary, healthScore, steps, diets } = req.body; // diet es un array de IDs de dietas
+        let { name, summary, healthScore, steps, dishTypes, image, diets,  } = req.body; // diet es un array de IDs de dietas
 
         validatePost(req.body);
 
         let newRecipe = await Recipe.create({
-            name: name,
-            summary: summary,
+            name,
+            summary,
             healthScore,
-            steps
+            steps,
+            dishTypes,
+            image,
         });
         
         diets && await newRecipe.setDiets(diets);
 
-        res.status(200).send("Receta creada correctamente"); // agregar el get con las diets
+        res.status(200).send("receta creada correctamente"); // agregar el get con las diets
     }
     catch(e) {
         console.log(e)
@@ -41,17 +43,25 @@ router.get("/", async(req,res) => {
     try{
         let { name } = req.query;
         let recipes;
+        // ESTO ESTÁ PARA NO AGOTAR LOS INTENTOS DE LA API
         if(!name) {
-            let apiRecipes = await getApiRecipes();
-            let dbRecipes = await getDbRecipes();
-            if(apiRecipes.length && dbRecipes.length) {
-                recipes = [...apiRecipes, ...dbRecipes]
+            recipes = await getDbRecipes(); 
+            if(!recipes.length) { 
+                let apiRecipes = await getApiRecipes();
+                recipes = await Recipe.bulkCreate(apiRecipes); 
             }
-            else if(!apiRecipes.length) recipes = dbRecipes;
-            else recipes = apiRecipes;
-
             res.status(200).json(recipes);
         }
+        // ESTE ES EL CODIGO REAL!
+        // if(!name) {
+        //     let apiRecipes = await getApiRecipes();
+        //     let dbRecipes = await getDbRecipes();
+        //     if(apiRecipes.length && dbRecipes.length) {
+        //         recipes = [...apiRecipes, ...dbRecipes]
+        //     }
+        //     else if(!apiRecipes.length) recipes = dbRecipes;
+        //     else recipes = apiRecipes;   
+        // }
         else {
             let apiRecipesByName = await getApiRecipesByName(name);
             let dbRecipesByName = await getDbRecipesByName(name);
@@ -103,9 +113,11 @@ router.get("/:id", async(req, res) => {
 module.exports = router;
 
 // {
-    // "name": "receta 1",
-    // "summary": "resumen de receta",
-    // "healthScore": 75,
-    // "steps": ["paso 1", "paso 2"],
-    // "diet": [1, 2]
+//     "name": "receta 1",
+//     "summary": "resumen de receta",
+//     "healthScore": 75,
+//     "steps": ["paso 1", "paso 2"],
+//     "dishTypes": ["default"],
+//     "diet": [1, 2],
+//     "image": "imgUrl"
 // }

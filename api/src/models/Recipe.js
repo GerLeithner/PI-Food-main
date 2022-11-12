@@ -25,6 +25,13 @@ module.exports = (sequelize) => {
     steps: {
       type: DataTypes.ARRAY(DataTypes.TEXT),
       allowNull: true,
+    },
+    dishTypes: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: true,
+    },
+    image: {
+      type: DataTypes.STRING
     }
   },
   { timestamps: false });
