@@ -5,7 +5,7 @@ export default function LandingPage() {
 
     return (
         <div className="">
-            <h1>Bienvenido a Foodnacular</h1>
+            <h1>Bienvenido a Foodstacular</h1>
             <NavLink to="/home">
                 <button>Ingresar</button>
             </NavLink>

@@ -1,5 +1,5 @@
 const express = require("express");
-const { Recipe, Diet } = require("../db");
+const { Recipe } = require("../db");
 const { 
     validatePost,
     getApiRecipes,
@@ -16,7 +16,7 @@ router.use(express.json());
 router.post("/", async(req, res) => {
 
     try {
-        let { name, summary, healthScore, steps, dishTypes, image, diets,  } = req.body; // diet es un array de IDs de dietas
+        let { name, summary, healthScore, steps, dishTypes, image, dietsId,  } = req.body; // diet es un array de IDs de dietas
 
         validatePost(req.body);
 
@@ -29,7 +29,7 @@ router.post("/", async(req, res) => {
             image,
         });
         
-        diets && await newRecipe.setDiets(diets);
+        dietsId && await newRecipe.setDiets(dietsId);
 
         res.status(200).send("receta creada correctamente"); // agregar el get con las diets
     }
@@ -46,10 +46,6 @@ router.get("/", async(req,res) => {
         // ESTO ESTÁ PARA NO AGOTAR LOS INTENTOS DE LA API
         if(!name) {
             recipes = await getDbRecipes(); 
-            if(!recipes.length) { 
-                let apiRecipes = await getApiRecipes();
-                recipes = await Recipe.bulkCreate(apiRecipes); 
-            }
             res.status(200).json(recipes);
         }
         // ESTE ES EL CODIGO REAL!
@@ -60,23 +56,32 @@ router.get("/", async(req,res) => {
         //         recipes = [...apiRecipes, ...dbRecipes]
         //     }
         //     else if(!apiRecipes.length) recipes = dbRecipes;
-        //     else recipes = apiRecipes;   
+        //     else recipes = apiRecipes;  
+        //     res.status(200).json(recipes); 
         // }
+
+        // ESTO ESTÁ PARA NO AGOTAR LOS INTENTOS DE LA API
         else {
-            let apiRecipesByName = await getApiRecipesByName(name);
-            let dbRecipesByName = await getDbRecipesByName(name);
-            if(apiRecipesByName.length && dbRecipesByName.length) {
-                recipes = [...apiRecipesByName, ...dbRecipesByName]
-            }
-            else if(!apiRecipesByName.length && !dbRecipesByName.length) {
-                throw new Error("No se ha encontrado coincidencia");
-            }
-            else if(!apiRecipesByName.length && dbRecipesByName.length)
-                recipes = dbRecipesByName;
-            else recipes = apiRecipesByName;
-            
+            recipes = await getDbRecipesByName(name);
+            if(!recipes.length) throw new Error("No se ha encontrado coincidencia");
             res.status(200).json(recipes);
         }
+        // ESTE ES EL CODIGO REAL
+        // else {
+        //     let apiRecipesByName = await getApiRecipesByName(name);
+        //     let dbRecipesByName = await getDbRecipesByName(name);
+        //     if(apiRecipesByName.length && dbRecipesByName.length) {
+        //         recipes = [...apiRecipesByName, ...dbRecipesByName]
+        //     }
+        //     else if(!apiRecipesByName.length && !dbRecipesByName.length) {
+        //         throw new Error("No se ha encontrado coincidencia");
+        //     }
+        //     else if(!apiRecipesByName.length && dbRecipesByName.length)
+        //         recipes = dbRecipesByName;
+        //     else recipes = apiRecipesByName;
+            
+        //     res.status(200).json(recipes);
+        // }
     }
     catch(e) {
         res.status(400).send(e.message);

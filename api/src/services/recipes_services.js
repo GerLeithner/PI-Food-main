@@ -3,7 +3,7 @@ const { Recipe, Diet } = require("../db.js");
 const API_KEY = process.env;
 const { Op } = require('sequelize');
 
-const limit = 20;
+const limit = 2;
 const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=f3a3570d30c54a43b6eb86e31761b485&addRecipeInformation=true&number=${limit}`;
 
 function validatePost({ name, summary, healthScore}) {
@@ -17,16 +17,13 @@ function validatePost({ name, summary, healthScore}) {
     }
     
     let regexHealthScore = /^\d+$/;
-    if(!regexHealthScore.test(healthScore)) {
+    if(healthScore && !regexHealthScore.test(healthScore)) {
         throw new Error("el healthScore debe ser un numero");
     }
     if(healthScore < 0 || healthScore > 100) {
         throw new Error("el healthScore debe estar entre 0 y 100");
     }
 }
-
-
-
 
 async function getApiRecipes() {
     let apiData = await axios.get(apiUrl);
@@ -42,7 +39,7 @@ async function getApiRecipes() {
             dishTypes: recipe.dishTypes.length ? recipe.dishTypes : ["not specified"],
             diets: recipe.diets.length ? recipe.diets : ["not specified"],
             image: recipe.image,
-            db: false
+            status: "api"
         }
     });
 } 
@@ -70,7 +67,7 @@ async function getDbRecipes() {
             dishTypes: recipe.dishTypes ? recipe.dishTypes : ["not specified"],
             diets: recipe.diets.length ? recipe.diets.map(diet => diet.name) : ["not specified"],
             image: recipe.image,
-            db: true
+            status: "db"
         }
     })
 }
@@ -102,7 +99,7 @@ async function getDbRecipesByName(name) {
             dishTypes: recipe.dishTypes ? recipe.dishTypes : ["not specified"],
             diets: recipe.diets.length ? recipe.diets.map(diet => diet.name) : ["not specified"],
             image: recipe.image,
-            db: true
+            status: "db"
         }
     })
 }
@@ -134,7 +131,7 @@ async function getDbRecipeById(id) {
         dishTypes: dbRecipe.dishTypes ? dbRecipe.dishTypes : ["not specified"],
         diets: dbRecipe.diets.length ? dbRecipe.diets.map(diet => diet.name) : ["not specified"],
         image: dbRecipe.image,
-        db: true
+        status: "db"
     }
 }
 
@@ -154,7 +151,7 @@ async function getApiRecipeById(id) {
         dishTypes: apiRecipe.dishTypes.length ? apiRecipe.dishTypes : ["not specified"],
         diets: apiRecipe.diets.length ? apiRecipe.diets : ["not specified"],
         image: apiRecipe.image,
-        db: false
+        status: "api"
     }
 }
 
