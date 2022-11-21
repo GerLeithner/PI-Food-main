@@ -12,12 +12,16 @@ const diets = [
         description: "No ingredients may contain meat or meat by-products, such as bones or gelatin."
     },
     {
-        name: "lacto-vegetarian",
+        name: "lacto vegetarian",
         description: "All ingredients must be vegetarian and none of the ingredients can be or contain egg. "
     },
     {
-        name: "ovo-vegetarian",
+        name: "ovo vegetarian",
         description: "All ingredients must be vegetarian and none of the ingredients can be or contain dairy."
+    },
+    {
+        name: "lacto ovo vegetarian",
+        description: "All ingredients must be vegetarian and allows for the consumption of animal products such as eggs and dairy."
     },
     {
         name: "vegan",

@@ -1,10 +1,12 @@
 const axios = require("axios");
 const { Recipe, Diet } = require("../db.js");
-const API_KEY = process.env;
+const { API_KEY }= process.env;
 const { Op } = require('sequelize');
 
 const limit = 2;
-const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=f3a3570d30c54a43b6eb86e31761b485&addRecipeInformation=true&number=${limit}`;
+const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&addRecipeInformation=true&number=${limit}`;
+
+
 
 function validatePost({ name, summary, healthScore}) {
 
@@ -17,6 +19,7 @@ function validatePost({ name, summary, healthScore}) {
     }
     
     let regexHealthScore = /^\d+$/;
+    if(healthScore === "") healthScore = null;
     if(healthScore && !regexHealthScore.test(healthScore)) {
         throw new Error("el healthScore debe ser un numero");
     }
@@ -63,8 +66,8 @@ async function getDbRecipes() {
             name: recipe.name,
             summary: recipe.summary,
             healthScore: recipe.healthScore,
-            steps: recipe.steps ? recipe.steps : ["not specified"],
-            dishTypes: recipe.dishTypes ? recipe.dishTypes : ["not specified"],
+            steps: recipe.steps.length ? recipe.steps : ["not specified"],
+            dishTypes: recipe.dishTypes.length ? recipe.dishTypes : ["not specified"],
             diets: recipe.diets.length ? recipe.diets.map(diet => diet.name) : ["not specified"],
             image: recipe.image,
             status: "db"
@@ -127,8 +130,8 @@ async function getDbRecipeById(id) {
         name: dbRecipe.name,
         summary: dbRecipe.summary,
         healthScore: dbRecipe.healthScore,
-        steps: dbRecipe.steps ? dbRecipe.steps : ["not specified"],
-        dishTypes: dbRecipe.dishTypes ? dbRecipe.dishTypes : ["not specified"],
+        steps: dbRecipe.steps.length ? dbRecipe.steps : ["not specified"],
+        dishTypes: dbRecipe.dishTypes.length ? dbRecipe.dishTypes : ["not specified"],
         diets: dbRecipe.diets.length ? dbRecipe.diets.map(diet => diet.name) : ["not specified"],
         image: dbRecipe.image,
         status: "db"

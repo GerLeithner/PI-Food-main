@@ -13,7 +13,7 @@ export default function CreateRecipe() {
   const [input, setInput] = useState({
     name: "",
     summary: "",
-    healthScore: null,
+    healthScore: "",
     step: "",
     steps: [],
     dishTypes: [],
@@ -122,7 +122,6 @@ export default function CreateRecipe() {
 
   function getDiet(id) {
     let selectedDiet = diets.find(diet => parseInt(diet.id) === parseInt(id));
-    console.log(selectedDiet);
     return selectedDiet;
   }
 
@@ -251,7 +250,9 @@ export default function CreateRecipe() {
         </div>
         <button type="submit">Crear Receta</button>
       </form>
-      <NavLink to="/home">Volver</NavLink>
+      <NavLink to="/home">
+        <button>Volver</button>
+      </NavLink>
     </div>
   );
 }

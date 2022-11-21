@@ -6,7 +6,6 @@ const initialState = {
     recipeDetail: {},
     diets: [],
     dishTypes: [],
-    error: null
 }
 
 export default function rooReducer(state = initialState, action) {
@@ -15,12 +14,6 @@ export default function rooReducer(state = initialState, action) {
     let sortedRecipes;
 
     switch(action.type) {
-        case "ERROR":
-            return {
-                ...state,
-                error: action.error
-            }
-
         case "LOADING":
             return {...state, loading: true };
     
