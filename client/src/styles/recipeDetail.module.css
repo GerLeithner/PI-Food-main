@@ -1,0 +1,50 @@
+.container {
+    margin: 0px;
+    padding-top: 40px;
+}
+
+.topContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.sideContainer {
+    padding-left: 600px;
+    margin-left: 600px;
+    height: 400px;
+    border-bottom: 1px solid #C21010;
+}
+
+.titleContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;   
+    align-items: top;
+    padding: 20px 40px 20px 40px;
+    gap: 140px;
+}
+
+.image {
+    width: 600px;
+    height: 400px;
+}
+
+.title {
+    color: #C21010;
+    align-items: center;
+    text-Decoration: none;
+    font-weight: 600;
+    font-size: 30px;
+    font-style: italic;
+  
+}
+
+.subTitle {
+    margin: 12px 0px 12px 0px;
+    color: black;
+    align-items: center;
+    text-Decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+}

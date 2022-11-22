@@ -1,7 +1,9 @@
 
 const initialState = {
     loading: false,
-    allRecipes : [],
+    searched: false,
+    errors: {},
+    allRecipes: [],
     recipes: [],
     recipeDetail: {},
     diets: [],
@@ -15,7 +17,10 @@ export default function rooReducer(state = initialState, action) {
 
     switch(action.type) {
         case "LOADING":
-            return {...state, loading: true };
+            return { ...state, loading: true };
+
+        case "ERROR":
+            return { ...state, errors: action.error, loading: false, recipes: [] };
     
         case "GET_RECIPES":
             return {
@@ -23,7 +28,7 @@ export default function rooReducer(state = initialState, action) {
                 allRecipes : action.recipes,
                 recipes: action.recipes,
                 loading: false,
-                error: null
+
             };
 
         case "GET_RECIPES_BY_NAME":
@@ -31,7 +36,6 @@ export default function rooReducer(state = initialState, action) {
                 ...state,
                 recipes: action.recipesByName,
                 loading: false,
-                error: null
             }
 
         case "GET_RECIPE_DETAIL":
@@ -56,15 +60,17 @@ export default function rooReducer(state = initialState, action) {
             }
         
         case "SORT_BY_ALPHABETICAL_ORDER":
+            console.log(action)
             sortedRecipes = action.order === "asc" ?
             allRecipes.sort((a, b) => {
-                if(a.name > b.name) return 1;
-                if(a.name < b.name) return -1;
+                console.log(a)
+                if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+                if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
                 return 0;
             }) :
             allRecipes.sort((a, b) => {
-                if(a.name > b.name) return -1;
-                if(a.name < b.name) return 1;
+                if(a.name.toLowerCase() > b.name.toLowerCase()) return -1;
+                if(a.name.toLowerCase() < b.name.toLowerCase()) return 1;
                 return 0;
             });
             return {

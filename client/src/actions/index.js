@@ -32,6 +32,10 @@ export function getRecipesByName(name) {
         })
         .catch(e => {
             console.log(e)
+            return dispatch({
+                type: "ERROR",
+                error: e.response.data
+            })
         });
     }
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createRecipe, getDiets, getDishTypes  } from "../actions";
 import { NavLink, useHistory } from "react-router-dom";
+import styles from "../styles/createRecipe.module.css"
 
 export default function CreateRecipe() {
   const dispatch = useDispatch();
@@ -33,15 +34,15 @@ export default function CreateRecipe() {
   function handleChange(e) {
     e.preventDefault();
 
+    setErrors(validate({ 
+      ...input,
+      [e.target.name]: e.target.value
+     }))
+    
     setInput({
       ...input,
       [e.target.name]: e.target.value
     });
-
-    setErrors(validate({
-      ...input,
-      [e.target.name]: e.target.value
-    }))
   }
 
   function handleSelect(e) {
@@ -88,9 +89,18 @@ export default function CreateRecipe() {
 
   }
 
+  function handleEnter(e) {
+    if (e.key.toLowerCase() === "enter" && !e.shiftKey) {
+      const form = e.target.form;
+      const index = [...form].indexOf(e.target);
+      form.elements[index + 1].focus();
+      e.preventDefault();
+    }
+  }
+
   function handeSubmit(e) {
     e.preventDefault();
-    
+
     if(Object.values(validate(input)).length) {
       return Object.values(validate(input)).forEach(e => {
         return alert(e);
@@ -111,15 +121,6 @@ export default function CreateRecipe() {
     history.push("/home"); // me redirige a /home al ejecutarse
   }
 
-  function handleEnter(e) {
-    if (e.key.toLowerCase() === "enter" && !e.shiftKey) {
-      const form = e.target.form;
-      const index = [...form].indexOf(e.target);
-      form.elements[index + 1].focus();
-      e.preventDefault();
-    }
-  }
-
   function getDiet(id) {
     let selectedDiet = diets.find(diet => parseInt(diet.id) === parseInt(id));
     return selectedDiet;
@@ -129,8 +130,9 @@ export default function CreateRecipe() {
     let errors = {};
     let regexName = /^[a-zA-Z\s]+$/;
 
-    if(!regexName.test(name)) errors.name = "Nombre invalido, no puede contener simbolos, ni numeros";
+    if(name && !regexName.test(name)) errors.name = "Nombre invalido, no puede contener simbolos, ni numeros";
     if(!name) errors.name = "Debe ingresar un nombre";
+    if(name && name.length > 42 ) errors.name = "El largo máximo del nombre es de 40 caracteres";
     if(!summary) errors.summary = "Debe ingresar un resumen";
     if(healthScore > 100 || healthScore < 0) errors.healthScore = "Los puntos de Salud deben ser menores o iguales a 100";
 
@@ -139,24 +141,23 @@ export default function CreateRecipe() {
 
 
   return (
-    <div>
+    <div className={styles.form}>
       <h1>Crea tu propia receta</h1>
       <form onSubmit={e => handeSubmit(e)}>
         <div>
           <label>Nombre: </label>
           <input
-
             onKeyDown={e => handleEnter(e)}
             onChange={e => handleChange(e)}
             name="name"
             type="text"
             value={input.name}
           />
+          { errors.name && <p>{errors.name}</p> }
         </div>
         <div>
           <label>Resumen: </label>
           <textarea
-
             onKeyDown={e => handleEnter(e)} 
             name="summary"
             type="text"
@@ -165,6 +166,7 @@ export default function CreateRecipe() {
             value={input.summary}
             onChange={(e) => handleChange(e)}
           />
+          { errors.summary && <p>{errors.summary}</p> }
         </div>
         <div>
           <label>Puntos Saludables: </label>
@@ -177,6 +179,7 @@ export default function CreateRecipe() {
             value={input.healthScore}
             onChange={(e) => handleChange(e)} 
           />
+          { errors.healthScore && <p>{errors.errors.healthScore}</p> }
         </div>
         <div>
           <label>Imagen: </label>
@@ -248,7 +251,7 @@ export default function CreateRecipe() {
             )})
           }
         </div>
-        <button type="submit">Crear Receta</button>
+        <button type="submit" disabled={Object.keys(validate(input)).length}>Crear Receta</button>
       </form>
       <NavLink to="/home">
         <button>Volver</button>

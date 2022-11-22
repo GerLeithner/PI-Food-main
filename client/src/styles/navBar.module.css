@@ -1,0 +1,40 @@
+.container {
+    z-index: 1;
+    width: 100%;
+    position: fixed;
+    padding: 2px 30px 2px 30px;
+    height: 45px;
+    background-color: #C21010;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;   
+    align-items: center;
+}
+
+.subContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;   
+    align-items: center;
+    gap: 30px;
+    margin-right: 50px;
+}
+
+.subTitle {
+    color: white;
+    align-items: center;
+    text-Decoration: none;
+    font-weight: 400;
+    font-style: italic;
+    font-size: 20px;
+}
+  
+.title {
+    color: white;
+    align-items: center;
+    text-Decoration: none;
+    font-weight: 600;
+    font-size: 25px;
+    font-style: italic;
+}
+

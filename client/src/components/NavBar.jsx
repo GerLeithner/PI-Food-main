@@ -1,14 +1,24 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import styles from "../styles/navBar.module.css";
 
 export default function NavBar() {
     
+
+
     return (
-        <nav>
-            <h1>Foodstacular</h1>
-            <NavLink to="/home">Home</NavLink>
-            <NavLink to="/recipe">Crear Receta</NavLink>
-            <NavLink to="/diets">Tipos de Dietas</NavLink>
+        <nav className={styles.container}>
+            <NavLink to="/home" className={styles.title} >
+                Henry Foods
+            </NavLink>
+            <div className={styles.subContainer}>
+                <NavLink to="/recipe" className={styles.subTitle}>
+                    Nueva Receta
+                </NavLink>
+                <NavLink to="/diets" className={styles.subTitle}>
+                    Tipos de Dietas
+                </NavLink>
+            </div>
         </nav>
     )
 

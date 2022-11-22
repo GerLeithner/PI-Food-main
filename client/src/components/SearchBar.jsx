@@ -2,8 +2,10 @@ import React from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { getRecipesByName } from "../actions";
+import styles from "../styles/searchBar.module.css"
 
-export default function SearchBar({ paged, }) {
+
+export default function SearchBar({ paged }) {
 
     const dispatch = useDispatch();
     const [search, setSearch] = useState("");
@@ -21,9 +23,14 @@ export default function SearchBar({ paged, }) {
     }
 
     return (
-        <div>
-            <input type="text" placeholder="Nombre de Receta..." value={search} onChange={e => handleInput(e)} />
-            <button onClick={e => handleSubmit(e)}>Buscar</button>
-        </div>
+        <form onSubmit={e => handleSubmit(e)}>
+            <input 
+                className={styles.input}  
+                type="text" 
+                placeholder="Nombre de Receta..." 
+                value={search} 
+                onChange={e => handleInput(e)} />
+            <button className={styles.button} type="submit">Ir</button>
+        </form>
     )
 }

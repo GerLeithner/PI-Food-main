@@ -1,0 +1,33 @@
+.container {
+    z-index: 3;
+    padding: 60px 0px 10px 200px;
+    border: 2px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.button {
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background-color: #C21010;
+    border: none;    
+    color: white;
+    padding: 1px;
+    cursor: pointer;
+}
+.button:hover {
+    background-color: white;
+    border: 1px  #C21010 solid;
+    color: #C21010;
+}
+.currentPage {
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    border: none;
+    background-color: white;
+    border: 1px  #C21010 solid;
+    color: #C21010;
+}

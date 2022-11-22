@@ -1,0 +1,93 @@
+.sideBar {
+    position: fixed;
+    height: 100vh;
+    width: 175px;
+    background-color: #efefef;
+    padding: 70px 15px 0px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+
+}
+
+.reloadButton {
+    width: 165px;
+    background-color: #C21010;
+    border: none;
+    border-radius: 5px;
+    height: 25px;
+    color: white;
+    padding: 3px;
+    cursor: pointer;
+
+}
+.reloadButton:hover {
+    background-color: white;
+    border: 2px  #C21010 solid;
+    color: #C21010;
+}
+
+.sortContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0px 15px 0px;
+    row-gap: 5px;
+    border-radius: 5px;
+    border: none;
+    background-color: #C21010;
+    color: white;
+    height: 200px;
+    width: 165px;
+}
+
+select {
+    width: 130px;
+    height: 20px;
+    outline: none;
+    border: none;  
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    margin: 0xp;
+    padding: 0px 0px 0px 240px;
+    row-gap: 40px;
+    gap:30px
+}
+
+.gridNotPaged {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    margin: 0xp;
+    padding: 90px 0px 0px 240px;
+    row-gap: 40px;
+    gap:30px
+}
+
+.title {
+    margin-left: 250px;
+    padding-left: 165px;
+    color: #C21010;
+    text-Decoration: none;
+    font-weight: 600;
+    font-size: 22px;
+    font-style: italic;
+}
+
+.loading {
+    padding-top: 130px;
+    padding-left: 50px;
+    margin-top: 0px;
+    margin-left: 50px;
+    color: #C21010;
+    text-Decoration: none;
+    font-weight: 600;
+    font-size: 22px;
+    font-style: italic;
+}

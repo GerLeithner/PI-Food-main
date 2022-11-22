@@ -1,11 +1,9 @@
 const axios = require("axios");
 const { Recipe, Diet } = require("../db.js");
 const { API_KEY }= process.env;
-const { Op } = require('sequelize');
 
 const limit = 2;
 const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&addRecipeInformation=true&number=${limit}`;
-
 
 
 function validatePost({ name, summary, healthScore}) {
@@ -76,35 +74,8 @@ async function getDbRecipes() {
 }
 
 async function getDbRecipesByName(name) {
-
-    let dbRecipesByName = await Recipe.findAll({
-        include: [
-            {
-              model: Diet,
-              attributes: ["name"],
-              through: {
-                raw: true,
-                attributes: [],
-              },
-            },
-        ],
-        where: {
-            name: { [Op.like]: `%${name.toLowerCase()}%` }
-        }
-    })
-    return dbRecipesByName.map(recipe => {
-        return {
-            id: recipe.id, 
-            name: recipe.name,
-            summary: recipe.summary,
-            healthScore: recipe.healthScore,
-            steps: recipe.steps ? recipe.steps : ["not specified"],
-            dishTypes: recipe.dishTypes ? recipe.dishTypes : ["not specified"],
-            diets: recipe.diets.length ? recipe.diets.map(diet => diet.name) : ["not specified"],
-            image: recipe.image,
-            status: "db"
-        }
-    })
+    let dbRecipes = await getDbRecipes();
+    return dbRecipes.filter(recipe => recipe.name.toLowerCase().includes(name.toLowerCase()));
 }
 
 async function getApiRecipesByName(name) {
