@@ -6,6 +6,12 @@ export function loading() {
     return { type: "LOADING" }
 }
 
+export function clearDetail() {
+    return {
+        type: "CLEAR_DETAIL"
+    }
+}
+
 export function getRecipes() {
     return function(dispatch) {
         dispatch(loading()); 
@@ -54,6 +60,31 @@ export function getRecipeById(id) {
             console.log(e);
         }
         
+    }
+}
+
+export function deleteRecipe(id) {
+    return function(dispatch) {
+        dispatch(loading());
+        axios.delete(`${localHost}/recipes/${id}`)
+        .then(() => {
+            return dispatch({
+                type: "DELETE_RECIPES",
+            })
+        })
+        .catch(e => {
+            console.log(e)
+            return dispatch({
+                type: "ERROR",
+                error: e.response.data
+            })
+        });
+    }
+}
+
+export function clearRecipes() {
+    return {
+        type: "CLEAR_RECIPES"
     }
 }
 
@@ -128,3 +159,4 @@ export function getDishTypes() {
         .catch(e => console.log(e))
     }
 }
+

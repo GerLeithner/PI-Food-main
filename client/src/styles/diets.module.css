@@ -1,0 +1,25 @@
+.container {
+    margin-top: 0px;
+    padding-top: 70px;
+}
+
+.title {
+    margin: 0px;
+}
+
+.button {
+    width: 165px;
+    background-color: #C21010;
+    border: none;
+    border-radius: 5px;
+    height: 25px;
+    color: white;
+    padding: 3px;
+    cursor: pointer;
+
+}
+.button:hover {
+    background-color: #efefef;
+    border: 2px  #C21010 solid;
+    color: #C21010;
+}

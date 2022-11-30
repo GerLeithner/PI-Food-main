@@ -13,7 +13,7 @@ export default function NavBar() {
             </NavLink>
             <div className={styles.subContainer}>
                 <NavLink to="/recipe" className={styles.subTitle}>
-                    Nueva Receta
+                    Crear Receta
                 </NavLink>
                 <NavLink to="/diets" className={styles.subTitle}>
                     Tipos de Dietas

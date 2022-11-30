@@ -47,7 +47,8 @@ select {
     width: 130px;
     height: 20px;
     outline: none;
-    border: none;  
+    border: none; 
+    margin: 5px; 
 }
 
 .grid {

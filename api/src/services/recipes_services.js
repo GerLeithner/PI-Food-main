@@ -26,9 +26,21 @@ function validatePost({ name, summary, healthScore}) {
     }
 }
 
-async function getApiRecipes() {
-    let apiData = await axios.get(apiUrl);
-    return apiData.data.results.map(recipe => {
+function dataNormalizer(recipe, status) {
+    if(status === "db"){
+        return {
+            id: recipe.id, 
+            name: recipe.name,
+            summary: recipe.summary,
+            healthScore: recipe.healthScore,
+            steps: recipe.steps.length ? recipe.steps : ["not specified"],
+            dishTypes: recipe.dishTypes.length ? recipe.dishTypes : ["not specified"],
+            diets: recipe.diets.length ? recipe.diets.map(diet => diet.name) : ["not specified"],
+            image: recipe.image,
+            status: "db"
+        }
+    }
+    else{
         return {
             id: recipe.id,
             name: recipe.title,
@@ -42,6 +54,13 @@ async function getApiRecipes() {
             image: recipe.image,
             status: "api"
         }
+    }
+}
+
+async function getApiRecipes() {
+    let apiData = await axios.get(apiUrl);
+    return apiData.data.results.map(recipe => {
+        return dataNormalizer(recipe, "api")
     });
 } 
 
@@ -59,17 +78,7 @@ async function getDbRecipes() {
         ]
     }); // Ajustamos el resultado del findAll para que coincida con la API y facilitar la lectura
     return dbRecipes.map(recipe => {
-        return {
-            id: recipe.id, 
-            name: recipe.name,
-            summary: recipe.summary,
-            healthScore: recipe.healthScore,
-            steps: recipe.steps.length ? recipe.steps : ["not specified"],
-            dishTypes: recipe.dishTypes.length ? recipe.dishTypes : ["not specified"],
-            diets: recipe.diets.length ? recipe.diets.map(diet => diet.name) : ["not specified"],
-            image: recipe.image,
-            status: "db"
-        }
+        return dataNormalizer(recipe, "db");
     })
 }
 
@@ -96,37 +105,14 @@ async function getDbRecipeById(id) {
             },
         ],
     }); 
-    return {
-        id: dbRecipe.id, 
-        name: dbRecipe.name,
-        summary: dbRecipe.summary,
-        healthScore: dbRecipe.healthScore,
-        steps: dbRecipe.steps.length ? dbRecipe.steps : ["not specified"],
-        dishTypes: dbRecipe.dishTypes.length ? dbRecipe.dishTypes : ["not specified"],
-        diets: dbRecipe.diets.length ? dbRecipe.diets.map(diet => diet.name) : ["not specified"],
-        image: dbRecipe.image,
-        status: "db"
-    }
+    return dataNormalizer(dbRecipe, "db");
 }
 
 async function getApiRecipeById(id) {
     console.log("entre al getAPI")
     let apiData = await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=f3a3570d30c54a43b6eb86e31761b485`);
     let apiRecipe = apiData.data;
-    console.log(apiRecipe)
-    return {
-        id: apiRecipe.id,
-        name: apiRecipe.title,
-        summary: apiRecipe.summary,
-        healthScore: apiRecipe.healthScore,
-        steps: apiRecipe.analyzedInstructions.length ? apiRecipe.analyzedInstructions[0].steps.map(s => {
-            return s.step;
-        }) : ["not specified"],
-        dishTypes: apiRecipe.dishTypes.length ? apiRecipe.dishTypes : ["not specified"],
-        diets: apiRecipe.diets.length ? apiRecipe.diets : ["not specified"],
-        image: apiRecipe.image,
-        status: "api"
-    }
+    return dataNormalizer(apiRecipe, "api");
 }
 
 

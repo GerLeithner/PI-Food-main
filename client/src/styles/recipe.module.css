@@ -1,6 +1,6 @@
 .container {
-    border: 1px #C21010 solid;
-    height: 500px;
+    border: 2px #C21010 solid;
+    height: 510px;
     width: 310px;
     padding: 15px;
     row-gap: 10px;
@@ -28,4 +28,8 @@
     text-Decoration: none;
     font-weight: 600;
     font-size: 15px;
+}
+
+.p {
+    margin: 2px;
 }

@@ -130,47 +130,39 @@ export default function CreateRecipe() {
     let errors = {};
     let regexName = /^[a-zA-Z\s]+$/;
 
-    if(name && !regexName.test(name)) errors.name = "Nombre invalido, no puede contener simbolos, ni numeros";
-    if(!name) errors.name = "Debe ingresar un nombre";
-    if(name && name.length > 42 ) errors.name = "El largo máximo del nombre es de 40 caracteres";
-    if(!summary) errors.summary = "Debe ingresar un resumen";
-    if(healthScore > 100 || healthScore < 0) errors.healthScore = "Los puntos de Salud deben ser menores o iguales a 100";
+    if(name && !regexName.test(name)) errors.name = "*Nombre invalido, no puede contener simbolos, ni numeros";
+    if(!name) errors.name = "*Debe ingresar un nombre";
+    if(name && name.length > 42 ) errors.name = "*El nombre de tener como máximo 40 caracteres";
+    if(!summary) errors.summary = "*Debe ingresar un resumen";
+    if(healthScore && (healthScore > 100 || healthScore < 0)) errors.healthScore = "Los puntos de Salud deben ser menores o iguales a 100";
 
     return errors;
   }
 
 
   return (
+    <div className={styles.body}>
     <div className={styles.form}>
-      <h1>Crea tu propia receta</h1>
+      <h1 className={styles.title}>Nueva Receta</h1>
       <form onSubmit={e => handeSubmit(e)}>
-        <div>
-          <label>Nombre: </label>
+        <div className={styles.horFlex}>
+          <label className={styles.subTitle}>Nombre</label>
           <input
+            className={styles.input}
             onKeyDown={e => handleEnter(e)}
             onChange={e => handleChange(e)}
             name="name"
             type="text"
             value={input.name}
           />
-          { errors.name && <p>{errors.name}</p> }
         </div>
-        <div>
-          <label>Resumen: </label>
-          <textarea
-            onKeyDown={e => handleEnter(e)} 
-            name="summary"
-            type="text"
-            rows="4"
-            cols="30"
-            value={input.summary}
-            onChange={(e) => handleChange(e)}
-          />
-          { errors.summary && <p>{errors.summary}</p> }
-        </div>
-        <div>
-          <label>Puntos Saludables: </label>
+        <>
+        { errors.name && <p className={styles.p}>{errors.name}</p> }
+        </>
+        <div className={styles.horFlex}>
+          <label className={styles.subTitle}>Puntos Saludables</label>
           <input
+            className={styles.input}
             max="100"
             min="0"
             onKeyDown={e => handleEnter(e)} 
@@ -179,11 +171,12 @@ export default function CreateRecipe() {
             value={input.healthScore}
             onChange={(e) => handleChange(e)} 
           />
-          { errors.healthScore && <p>{errors.errors.healthScore}</p> }
+          { errors.healthScore && <p className={styles.p}>{errors.healthScore}</p> }
         </div>
-        <div>
-          <label>Imagen: </label>
+        <div className={styles.horFlex}>
+          <label className={styles.subTitle}>Imagen</label>
           <input
+            className={styles.input}
             onKeyDown={e => handleEnter(e)} 
             onChange={(e) => handleChange(e)}
             name="image"
@@ -192,8 +185,8 @@ export default function CreateRecipe() {
             placeholder="URL de la imagen"
           />
         </div>
-        <div>
-          <label>Tipo de Dieta: </label>
+        <div className={styles.horFlex}>
+          <label className={styles.subTitle}>Tipos de Dieta</label>
           <select name="diets" onChange={e => handleSelect(e)}>
             <option hidden>Seleccionar</option>
             { diets?.map(diet => {
@@ -201,18 +194,18 @@ export default function CreateRecipe() {
               })
             }
           </select>
-          <div />
-            { selectedDiets?.map(diet => {
-              return (
-                <span key={diet.id}>
-                  {diet.name} <button name="diets" value={diet.id} onClick={e => handleDelete(e)}>x</button>
-                </span>
-              )})
-            }
-          <div />
         </div>
         <div>
-          <label>Tipo de Plato: </label>
+        { selectedDiets?.map(diet => {
+              return (
+                <span key={diet.id}>
+                  {diet.name}<button name="diets" value={diet.id} onClick={e => handleDelete(e)} className={styles.buttonX}>x</button>
+                </span>
+              )})
+          }
+        </div>
+        <div className={styles.horFlex}>
+          <label className={styles.subTitle}>Tipo de Plato</label>
           <select name="dishTypes" onChange={e => handleSelect(e)}>
             <option hidden>Seleccionar</option>
             { dishTypes && dishTypes.map((dish, i) => {
@@ -220,19 +213,36 @@ export default function CreateRecipe() {
               })
             }
           </select>
-          <div>
-            { input.dishTypes.map((dish, i) => {
+        </div>
+        <div>
+        { input.dishTypes.map((dish, i) => {
               return (
                 <span key={i}>
-                  {dish} <button type="button" value={dish} name="dishTypes" onClick={e => handleDelete(e)}>x</button>
+                  {dish}<button type="button" value={dish} name="dishTypes" onClick={e => handleDelete(e)} className={styles.buttonX}>x</button>
                 </span>
               )})
             }
-          </div>
         </div>
-        <div>
-          <label>Pasos: </label>
+        <div className={styles.horFlex}>
+          <label className={styles.subTitle}>Resumen</label>
           <textarea
+            className={styles.textarea}
+            onKeyDown={e => handleEnter(e)} 
+            name="summary"
+            type="text"
+            rows="4"
+            cols="30"
+            value={input.summary}
+            onChange={(e) => handleChange(e)}
+          />
+        </div>
+        <>
+          { errors.summary && <p className={styles.p}>{errors.summary}</p> }
+        </>
+        <div className={styles.horFlex}>
+          <label className={styles.subTitle}>Pasos</label>
+          <textarea
+            className={styles.textarea}
             onKeyDown={e => handleEnter(e)}
             name="step"
             type="text"
@@ -241,21 +251,42 @@ export default function CreateRecipe() {
             value={input.step}
             onChange={e => handleChange(e)}
           />
-          <br />
-          <button type="button" onClick={e => handleSteps(e)}>Agregar nuevo paso</button> 
+        </div>
+        <div>
+          <>
           { input.steps.map((step, i) => {
             return (
-              <div key={i}>
-                Paso {i + 1}: {step} <button type="button" value={step} name="steps" onClick={e => handleDelete(e)}>x</button>
-              </div>
+              <p key={i}>
+                Paso {i + 1}: {step} 
+                <button 
+                  type="button" 
+                  value={step} 
+                  name="steps" 
+                  onClick={e => handleDelete(e)} 
+                  className={styles.buttonX}
+                >
+                  x
+                </button>
+              </p>
             )})
           }
+          </>
+          <button type="button" className={styles.button} onClick={e => handleSteps(e)}>
+            + Paso
+          </button> 
         </div>
-        <button type="submit" disabled={Object.keys(validate(input)).length}>Crear Receta</button>
+        <button 
+          className={styles.button} 
+          type="submit" 
+          disabled={Object.keys(validate(input)).length}
+        >
+          Crear Receta
+        </button>
       </form>
       <NavLink to="/home">
-        <button>Volver</button>
+        <button className={styles.button}>{"< Volver"}</button>
       </NavLink>
+    </div>
     </div>
   );
 }

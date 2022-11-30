@@ -10,16 +10,10 @@ export default function Recipe({ id, name, diets, dishTypes, img, healthScore })
                 {name}
             </Link>
             <h4 className={styles.subTitle}>{healthScore} Puntos de salud</h4>
-            <h4 className={styles.subTitle}>Tipos de Dieta:</h4>
-            { diets?.map((d, i) => {
-                    return <span key={i}>{d}</span>
-                })
-            }
-            <h4 className={styles.subTitle}>Tipos de Plato:</h4>
-            { dishTypes?.map((d, i) => {
-                    return <span key={i}>{d}</span>
-                })
-            } 
+            <h4 className={styles.subTitle}>Tipos de Dieta</h4>
+            { diets && <p className={styles.p}>{diets.join(", ")}</p> }
+            <h4 className={styles.subTitle}>Tipos de Plato</h4>
+            { dishTypes && <p className={styles.p}>{dishTypes.join(", ")}</p> }
         </div>
     )
 }

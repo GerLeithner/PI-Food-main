@@ -12,8 +12,8 @@ const initialState = {
 
 export default function rooReducer(state = initialState, action) {
     let allRecipes = state.allRecipes;
-    let filteredRecipes;
-    let sortedRecipes;
+    let filteredRecipes = state.recipes;
+    let sortedRecipes = state.recipes;
 
     switch(action.type) {
         case "LOADING":
@@ -21,6 +21,9 @@ export default function rooReducer(state = initialState, action) {
 
         case "ERROR":
             return { ...state, errors: action.error, loading: false, recipes: [] };
+
+        case "CLEAR_DETAIL":
+            return { ...state, recipeDetail: {}}
     
         case "GET_RECIPES":
             return {
@@ -43,6 +46,15 @@ export default function rooReducer(state = initialState, action) {
                 ...state,
                 recipeDetail: action.recipe
             }
+
+        case "DELETE_RECIPE":
+            return { ...state }
+
+        case "CLEAR_RECIPES":
+            return {
+                ...state,
+                recipes: []
+            }
         
         case "FILTER_RECIPES_BY_DIET":
             filteredRecipes = allRecipes.filter(r => r.diets.includes(action.diet));
@@ -61,14 +73,14 @@ export default function rooReducer(state = initialState, action) {
         
         case "SORT_BY_ALPHABETICAL_ORDER":
             console.log(action)
-            sortedRecipes = action.order === "asc" ?
-            allRecipes.sort((a, b) => {
+            sortedRecipes = action.order === "asc" ? 
+            state.recipes.sort((a, b) => {
                 console.log(a)
                 if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
                 if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
                 return 0;
             }) :
-            allRecipes.sort((a, b) => {
+            state.recipes.sort((a, b) => {
                 if(a.name.toLowerCase() > b.name.toLowerCase()) return -1;
                 if(a.name.toLowerCase() < b.name.toLowerCase()) return 1;
                 return 0;
@@ -80,12 +92,12 @@ export default function rooReducer(state = initialState, action) {
         
         case "SORT_BY_HEALTH_SCORE":
             sortedRecipes = action.order === "decrement" ?
-            allRecipes.sort((a, b) => {
+            state.recipes.sort((a, b) => {
                 if(a.healthScore > b.healthScore) return 1;
                 if(a.healthScore < b.healthScore) return -1;
                 return 0;
             }) :
-            allRecipes.sort((a, b) => {
+            state.recipes.sort((a, b) => {
                 if(a.healthScore > b.healthScore) return -1;
                 if(a.healthScore < b.healthScore) return 1;
                 return 0;

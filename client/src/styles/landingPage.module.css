@@ -1,0 +1,41 @@
+.body {
+    padding-top: 170px;
+    background-image: url("../img/background01.jpg");
+    width: 100vw;
+    height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+}
+
+.container {
+    background-color: #efefef;
+    padding: 30px;
+}
+
+.title {
+    color: #C21010;
+    align-items: center;
+    text-Decoration: none;
+    font-weight: 600;
+    font-size: 32px;
+    font-style: italic;
+}
+
+.reloadButton {
+    width: 165px;
+    background-color: #C21010;
+    border: none;
+    border-radius: 5px;
+    height: 30px;
+    color: white;
+    padding: 3px;
+    cursor: pointer;
+    font-size: 15px;
+
+}
+.reloadButton:hover {
+    background-color: #efefef;
+    border: 2px  #C21010 solid;
+    color: #C21010;
+}

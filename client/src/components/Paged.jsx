@@ -11,6 +11,9 @@ export default function Paged({ recipesXPage, allRecipesNumber, paged, currentPa
     return (
         pageNumber.length <= 1 ? null : 
         <nav className={styles.container}>
+            { currentPage !== 1 && 
+             <button onClick={() => paged(currentPage - 1)} className={styles.next}>{"< anterior"}</button>
+            }
             { pageNumber && pageNumber.map((n, i) => {
                 return (
                     <button className={currentPage === n ? styles.currentPage : styles.button} 
@@ -20,6 +23,9 @@ export default function Paged({ recipesXPage, allRecipesNumber, paged, currentPa
                     </button>
                 )   
             })}
+            { currentPage !== pageNumber.length &&
+             <button onClick={() => paged(currentPage + 1)} className={styles.next}>{"siguiente >"}</button> 
+            }
         </nav>
     )
 }

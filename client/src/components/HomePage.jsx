@@ -7,11 +7,11 @@ import {
   filterRecipesByStatus,
   sortByAlphabeticalOrder,
   sortByHealthScore,
-} from "../actions";
+  clearRecipes } from "../actions";
 import Recipe from "./Recipe";
 import Paged from "./Paged";
 import SearchBar from "./SearchBar";
-import styles from "../styles/homePage.module.css"
+import styles from "../styles/homePage.module.css";
 
 export default function Home() {
   const dispatch = useDispatch(); // reemplaza mapDispatch to props
@@ -37,6 +37,7 @@ export default function Home() {
   useEffect(() => {
     dispatch(getDiets());
     dispatch(getRecipes());
+    return () => dispatch(clearRecipes());
   }, [dispatch]);
 
 
