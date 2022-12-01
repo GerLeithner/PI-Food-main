@@ -1,12 +1,19 @@
-.image {
-    width: 600px;
-    height: 540px;
-    position: absolute;
-    top: 49px;
-    left: 0px;
+.recipeDetail {
+    text-align: left;
 }
 
-.sideContainer {
+.imageAndInfoContainer {
+    margin: 20px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.recipeDetail img {
+    width: 100%;
+}
+
+.sideInfo {
     height: 400px;
     width: 700px;
     display: flex;
@@ -18,10 +25,12 @@
     align-content: center;
 }
 
+
+
 .horFlex {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-content: center;
     gap: 60px;
     margin-top: 0px;
@@ -45,6 +54,7 @@
 }
 
 .summary {
+    
     height: 170px;
     width: 690px;
     word-wrap: break-word;

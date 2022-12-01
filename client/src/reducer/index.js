@@ -50,6 +50,9 @@ export default function rooReducer(state = initialState, action) {
         case "DELETE_RECIPE":
             return { ...state }
 
+        case "EDIT_RECIPE":
+            return { ...state }
+
         case "CLEAR_RECIPES":
             return {
                 ...state,

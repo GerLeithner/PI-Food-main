@@ -1,26 +1,38 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createRecipe, getDiets, getDishTypes  } from "../actions";
+import { 
+  createRecipe,
+  getDiets, 
+  getDishTypes, 
+  getRecipeById,
+  editRecipe,
+  clearRecipes  } from "../actions";
 import { NavLink, useHistory } from "react-router-dom";
 import styles from "../styles/createRecipe.module.css"
 
-export default function CreateRecipe() {
+export default function CreateRecipe(props) {
   const dispatch = useDispatch();
   const history = useHistory();
 
   const diets = useSelector(state => state.diets);
   const dishTypes = useSelector(state => state.dishTypes);
+  
+  const id = props.match.params.id;
+  const detail = useSelector(state => state.recipeDetail);
 
   const [input, setInput] = useState({
-    name: "",
-    summary: "",
-    healthScore: "",
+    name: id ? detail.name : "",
+    summary: id ? detail.summary : "",
+    healthScore: id ? detail.healthScore : "",
     step: "",
-    steps: [],
-    dishTypes: [],
-    image: "",
-    diets: [],
+    steps:  id ? detail.steps : [],
+    dishTypes: id ? detail.dishTypes : [],
+    image: id ? detail.image : "",
+    diets: id ? detail.dishTypes : [],
   });
+
+  console.log(id);
+  console.log(input);
 
   const [selectedDiets, setSelectedDiets] = useState([]);
   const [errors, setErrors] = useState({});
@@ -28,6 +40,17 @@ export default function CreateRecipe() {
   useEffect(() => {
     dispatch(getDiets());
     dispatch(getDishTypes());
+    return () => {
+      setInput({
+        name: "",
+        summary: "",
+        healthScore: "",
+        steps: [],
+        dishTypes: [],
+        image: "",
+        diets: [],
+      });
+    }
   }, [dispatch]);
 
 
@@ -107,8 +130,15 @@ export default function CreateRecipe() {
       })
     }
 
-    dispatch(createRecipe(input));
-    alert("Receta creada con exito");
+    if(id) {
+      dispatch(editRecipe(input, id));
+      alert("Receta editada con exito");
+    }
+    else {
+      dispatch(createRecipe(input));
+      alert("Receta creada con exito");
+    }
+
     setInput({
       name: "",
       summary: "",
@@ -118,6 +148,7 @@ export default function CreateRecipe() {
       image: "",
       diets: [],
     });
+
     history.push("/home"); // me redirige a /home al ejecutarse
   }
 
@@ -134,7 +165,7 @@ export default function CreateRecipe() {
     if(!name) errors.name = "*Debe ingresar un nombre";
     if(name && name.length > 42 ) errors.name = "*El nombre de tener como máximo 40 caracteres";
     if(!summary) errors.summary = "*Debe ingresar un resumen";
-    if(healthScore && (healthScore > 100 || healthScore < 0)) errors.healthScore = "Los puntos de Salud deben ser menores o iguales a 100";
+    if(healthScore && (healthScore > 100 || healthScore < 0)) errors.healthScore = "*Los puntos de Salud deben ser menores o iguales a 100";
 
     return errors;
   }
@@ -143,7 +174,7 @@ export default function CreateRecipe() {
   return (
     <div className={styles.body}>
     <div className={styles.form}>
-      <h1 className={styles.title}>Nueva Receta</h1>
+      <h1 className={styles.title}>{id ? "Editar Receta" : "Nueva Receta"}</h1>
       <form onSubmit={e => handeSubmit(e)}>
         <div className={styles.horFlex}>
           <label className={styles.subTitle}>Nombre</label>
@@ -157,7 +188,7 @@ export default function CreateRecipe() {
           />
         </div>
         <>
-        { errors.name && <p className={styles.p}>{errors.name}</p> }
+        { errors.name && <p className={styles.error}>{errors.name}</p> }
         </>
         <div className={styles.horFlex}>
           <label className={styles.subTitle}>Puntos Saludables</label>
@@ -171,8 +202,10 @@ export default function CreateRecipe() {
             value={input.healthScore}
             onChange={(e) => handleChange(e)} 
           />
-          { errors.healthScore && <p className={styles.p}>{errors.healthScore}</p> }
         </div>
+        <>
+        { errors.healthScore && <p className={styles.error}>{errors.healthScore}</p> }
+        </>
         <div className={styles.horFlex}>
           <label className={styles.subTitle}>Imagen</label>
           <input
@@ -198,7 +231,7 @@ export default function CreateRecipe() {
         <div>
         { selectedDiets?.map(diet => {
               return (
-                <span key={diet.id}>
+                <span key={diet.id} className={styles.p}>
                   {diet.name}<button name="diets" value={diet.id} onClick={e => handleDelete(e)} className={styles.buttonX}>x</button>
                 </span>
               )})
@@ -215,9 +248,9 @@ export default function CreateRecipe() {
           </select>
         </div>
         <div>
-        { input.dishTypes.map((dish, i) => {
+        { input.dishTypes?.map((dish, i) => {
               return (
-                <span key={i}>
+                <span key={i} className={styles.p}>
                   {dish}<button type="button" value={dish} name="dishTypes" onClick={e => handleDelete(e)} className={styles.buttonX}>x</button>
                 </span>
               )})
@@ -237,7 +270,7 @@ export default function CreateRecipe() {
           />
         </div>
         <>
-          { errors.summary && <p className={styles.p}>{errors.summary}</p> }
+          { errors.summary && <p className={styles.error}>{errors.summary}</p> }
         </>
         <div className={styles.horFlex}>
           <label className={styles.subTitle}>Pasos</label>
@@ -254,9 +287,9 @@ export default function CreateRecipe() {
         </div>
         <div>
           <>
-          { input.steps.map((step, i) => {
+          { input.steps?.map((step, i) => {
             return (
-              <p key={i}>
+              <p key={i} className={styles.p}>
                 Paso {i + 1}: {step} 
                 <button 
                   type="button" 
@@ -280,12 +313,12 @@ export default function CreateRecipe() {
           type="submit" 
           disabled={Object.keys(validate(input)).length}
         >
-          Crear Receta
+          {id ? "Guardar Receta" : "Crear Receta"}
         </button>
       </form>
-      <NavLink to="/home">
+      <NavLink to={id ? `/home/${id}` : "/home"}>
         <button className={styles.button}>{"< Volver"}</button>
-      </NavLink>
+      </NavLink>{}
     </div>
     </div>
   );

@@ -2,7 +2,7 @@ const axios = require("axios");
 const { Recipe, Diet } = require("../db.js");
 const { API_KEY }= process.env;
 
-const limit = 2;
+const limit = 20;
 const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&addRecipeInformation=true&number=${limit}`;
 
 

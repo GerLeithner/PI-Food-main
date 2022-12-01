@@ -15,7 +15,7 @@ function App() {
         <Route exact path="/" component={LandingPage} />
         <Route path={["/home", "/recipe", "/home/:id", "/diets"]} component={NavBar} />
         <Route exact path="/home" component={HomePage} />
-        <Route exact path="/recipe" component={CreateRecipe} />
+        <Route exact path={["/recipe", "/recipe/:id"]} component={CreateRecipe} />
         <Route path="/home/:id" component={RecipeDetail} />
         <Route path="/diets" component={Diets} />
       </div>

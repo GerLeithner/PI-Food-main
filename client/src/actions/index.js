@@ -63,13 +63,48 @@ export function getRecipeById(id) {
     }
 }
 
+export function createRecipe(recipe) {
+    return function(dispatch) {
+        dispatch(loading());
+        axios.post(`${localHost}/recipes`, recipe)
+        .then(response => {
+            console.log(response);
+            return {
+                type: "CREATE_RECIPE",
+            }
+        })
+        .catch(e => {
+            console.log(e)
+        });
+    }
+}
+
 export function deleteRecipe(id) {
     return function(dispatch) {
         dispatch(loading());
         axios.delete(`${localHost}/recipes/${id}`)
         .then(() => {
             return dispatch({
-                type: "DELETE_RECIPES",
+                type: "DELETE_RECIPE",
+            })
+        })
+        .catch(e => {
+            console.log(e)
+            return dispatch({
+                type: "ERROR",
+                error: e.response.data
+            })
+        });
+    }
+}
+
+export function editRecipe(input, id) {
+    return function(dispatch) {
+        dispatch(loading());
+        axios.put(`${localHost}/recipes/${id}`, input)
+        .then(() => {
+            return dispatch({
+                type: "EDIT_RECIPE",
             })
         })
         .catch(e => {
@@ -113,22 +148,6 @@ export function sortByHealthScore(order) {
     return {
         type: "SORT_BY_HEALTH_SCORE",
         order
-    }
-}
-
-export function createRecipe(recipe) {
-    return function(dispatch) {
-        dispatch(loading());
-        axios.post(`${localHost}/recipes`, recipe)
-        .then(response => {
-            console.log(response);
-            return {
-                type: "CREATE_RECIPE",
-            }
-        })
-        .catch(e => {
-            console.log(e)
-        });
     }
 }
 
