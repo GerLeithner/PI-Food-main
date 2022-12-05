@@ -1,14 +1,13 @@
 .container {
     border: 2px #C21010 solid;
-    height: 510px;
+    height: 540px;
     width: 310px;
     padding: 15px;
     row-gap: 10px;
 }
 
-.image {
-    width: 300px; 
-    height: 280px; 
+.image { 
+    height: 250px; 
 }
   
 .title {
@@ -22,12 +21,12 @@
 }
 
 .subTitle {
-    margin: 12px 0px 12px 0px;
+    margin: 6px 0px 6px 0px;
     color: black;
     align-items: center;
     text-Decoration: none;
     font-weight: 600;
-    font-size: 15px;
+    font-size: 17px;
 }
 
 .p {

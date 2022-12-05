@@ -1,5 +1,5 @@
 const express = require("express");
-const { Recipe } = require("../db");
+const { Recipe, Diet } = require("../db");
 const { 
     validatePost,
     getApiRecipes,
@@ -9,6 +9,7 @@ const {
     getDbRecipeById,
     getApiRecipeById,
 } = require("../services/recipes_services");
+const { getDietId } = require("../services/diet_services");
 
 const router = express();
 router.use(express.json());
@@ -17,9 +18,10 @@ router.use(express.json());
 router.post("/", async(req, res) => {
 
     try {
-        let { name, summary, healthScore, steps, dishTypes, image, diets } = req.body; // diet es un array de IDs de dietas
 
         validatePost(req.body);
+
+        let { name, summary, healthScore, steps, dishTypes, image, diets} = req.body;
 
         let newRecipe = await Recipe.create({
             name,
@@ -30,7 +32,10 @@ router.post("/", async(req, res) => {
             image,
         });
         
-        diets && await newRecipe.setDiets(diets);
+        if(diets.length) {
+            let idDiets = await Promise.all(diets.map(diet => getDietId(diet)));
+            idDiets && await newRecipe.setDiets(idDiets);
+        }
 
         res.status(200).send("receta creada correctamente"); 
     }
@@ -85,6 +90,7 @@ router.get("/", async(req,res) => {
         }
     }
     catch(e) {
+        console.log(e);
         res.status(400).send(e.message);
     }
 })
@@ -134,14 +140,27 @@ router.delete("/:id", async(req, res) => {
 
 router.put("/:id", async(req, res) => {
     const regexId = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/;
+    
     let { id } = req.params;
-    let { name, summary, healthScore, steps, dishTypes, image, diets } = req.body;
+    let { name, summary, healthScore, steps, dishTypes, image, diets} = req.body;
 
     try {
         if(!regexId.test(id)) throw new Error("Id invalido");
         validatePost(req.body);
 
-        let recipe = await Recipe.findByPk(id);
+        let recipe = await Recipe.findByPk(id, {
+            include: [
+                {
+                  model: Diet,
+                  attributes: ["name"],
+                  through: {
+                    raw: true,
+                    attributes: [],
+                  },
+                },
+            ],
+        });
+
         if(recipe) {
             await recipe.update({
                 name, 
@@ -150,8 +169,18 @@ router.put("/:id", async(req, res) => {
                 steps, 
                 dishTypes, 
                 image, 
-                diets
             });
+
+            if(diets.length) {
+                let idDiets = await Promise.all(diets.map(diet => getDietId(diet)));
+                idDiets && await recipe.setDiets(idDiets);
+            }
+            // else {
+            //     recipe.update({
+            //         diets: []
+            //     })
+            // }
+
             res.status(200).send("Receta actualizada correctamente");
         }
         else throw new Error("la id no pertenece a una receta guardada");

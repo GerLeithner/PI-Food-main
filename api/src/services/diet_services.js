@@ -1,3 +1,5 @@
+const { Diet } = require("../db");
+
 const diets = [
     {
         name: "gluten free",
@@ -49,6 +51,16 @@ const diets = [
     },
 ];
 
+async function getDietId(name) {
+    let diet = await Diet.findOne({
+        where: { name }
+    })
+    console.log(diet)
+    let id = diet.id;
+    return id;
+}
+
 module.exports = {
     diets,
+    getDietId,
 }

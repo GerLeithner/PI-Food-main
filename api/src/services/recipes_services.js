@@ -1,8 +1,9 @@
-const axios = require("axios");
+
+const fetch = require("node-fetch");
 const { Recipe, Diet } = require("../db.js");
 const { API_KEY }= process.env;
 
-const limit = 20;
+const limit = 5;
 const apiUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&addRecipeInformation=true&number=${limit}`;
 
 
@@ -58,8 +59,11 @@ function dataNormalizer(recipe, status) {
 }
 
 async function getApiRecipes() {
-    let apiData = await axios.get(apiUrl);
-    return apiData.data.results.map(recipe => {
+
+    let apiFetch = await fetch(apiUrl);
+    let data = await apiFetch.json();
+
+    return data.results.map(recipe => {
         return dataNormalizer(recipe, "api")
     });
 } 
@@ -82,14 +86,22 @@ async function getDbRecipes() {
     })
 }
 
+async function getApiRecipesByName(name) {
+    let apiRecipes = await getApiRecipes();
+    return apiRecipes.filter(recipe => recipe.name.toLowerCase().includes(name.toLowerCase()));
+}
+
 async function getDbRecipesByName(name) {
     let dbRecipes = await getDbRecipes();
     return dbRecipes.filter(recipe => recipe.name.toLowerCase().includes(name.toLowerCase()));
 }
 
-async function getApiRecipesByName(name) {
-    let apiRecipes = await getApiRecipes();
-    return apiRecipes.filter(recipe => recipe.name.toLowerCase().includes(name.toLowerCase()));
+async function getApiRecipeById(id) {
+    console.log("entre al getAPI")
+    let apiFetch = await fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}`);
+    let data = await apiFetch.json();
+    console.log(data)
+    return dataNormalizer(data, "api");
 }
 
 async function getDbRecipeById(id) {
@@ -107,14 +119,6 @@ async function getDbRecipeById(id) {
     }); 
     return dataNormalizer(dbRecipe, "db");
 }
-
-async function getApiRecipeById(id) {
-    console.log("entre al getAPI")
-    let apiData = await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=f3a3570d30c54a43b6eb86e31761b485`);
-    let apiRecipe = apiData.data;
-    return dataNormalizer(apiRecipe, "api");
-}
-
 
 module.exports = {
     validatePost,

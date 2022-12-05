@@ -13,19 +13,30 @@ export default function DietsTypes() {
         dispatch(getDiets());
     }, [dispatch]);
 
+    function firstLetterUpper (string) {
+        const words = string.split(" ");
+        for (let i = 0; i < words.length; i++) {
+            words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+        }
+        return words.join(" ");
+    }
+
     return (
-        <div className={styles.container}>
+        <div className={styles.Diets}>
             {diets?.map(diet => {
                return (
-                <div>
-                    <h3 className={styles.title}>{diet.name}</h3>
+                <div className={styles.diet}>
+                    <h3>{firstLetterUpper(diet.name)}</h3>
                     <p>{diet.description}</p>
                </div>
                )     
             })}
+            <div className={styles.buttons}>
             <NavLink to="/home">
                 <button className={styles.button}>{"< Volver"}</button>
             </NavLink>
+            </div>
+
         </div>
     )
 }

@@ -20,22 +20,26 @@ export default function CreateRecipe(props) {
   const id = props.match.params.id;
   const detail = useSelector(state => state.recipeDetail);
 
+  console.log(detail)
+
   const [input, setInput] = useState({
     name: id ? detail.name : "",
     summary: id ? detail.summary : "",
     healthScore: id ? detail.healthScore : "",
-    step: "",
     steps:  id ? detail.steps : [],
     dishTypes: id ? detail.dishTypes : [],
     image: id ? detail.image : "",
-    diets: id ? detail.dishTypes : [],
+    diets: id ? detail.diets : [],
+    step: "",
   });
 
-  console.log(id);
-  console.log(input);
 
-  const [selectedDiets, setSelectedDiets] = useState([]);
+  console.log("input: ",input);
+
+  const [selectedDiets, setSelectedDiets] = useState(id ? detail.diets : []);
   const [errors, setErrors] = useState({});
+
+  console.log("selectedDiets: ",selectedDiets)
 
   useEffect(() => {
     dispatch(getDiets());
@@ -75,26 +79,15 @@ export default function CreateRecipe(props) {
       return alert("Ya has elegido esa opcion");
     }
 
-    if(e.target.name === "diets") {
-      let diet = getDiet(e.target.value);
-      setSelectedDiets([...selectedDiets, diet]);
-    }
-
     setInput({
       ...input,
       [e.target.name]: [...input[e.target.name], e.target.value]
     })
-
-    e.target.value ="tu vieja";
   }
 
   function handleDelete(e) {
     e.preventDefault();
-
-    if(e.target.name === "diets") {
-      setSelectedDiets(selectedDiets.filter(diet => parseInt(diet.id) !== parseInt(e.target.value)))
-    }
-
+    
     setInput({
       ...input,
       [e.target.name]: input[e.target.name].filter(element => element !== e.target.value) 
@@ -152,11 +145,6 @@ export default function CreateRecipe(props) {
     history.push("/home"); // me redirige a /home al ejecutarse
   }
 
-  function getDiet(id) {
-    let selectedDiet = diets.find(diet => parseInt(diet.id) === parseInt(id));
-    return selectedDiet;
-  }
-
   function validate({ name, summary, healthScore}) {
     let errors = {};
     let regexName = /^[a-zA-Z\s]+$/;
@@ -176,7 +164,7 @@ export default function CreateRecipe(props) {
     <div className={styles.form}>
       <h1 className={styles.title}>{id ? "Editar Receta" : "Nueva Receta"}</h1>
       <form onSubmit={e => handeSubmit(e)}>
-        <div className={styles.horFlex}>
+        <div className={styles.titleAndInput}>
           <label className={styles.subTitle}>Nombre</label>
           <input
             className={styles.input}
@@ -190,7 +178,7 @@ export default function CreateRecipe(props) {
         <>
         { errors.name && <p className={styles.error}>{errors.name}</p> }
         </>
-        <div className={styles.horFlex}>
+        <div className={styles.titleAndInput}>
           <label className={styles.subTitle}>Puntos Saludables</label>
           <input
             className={styles.input}
@@ -206,7 +194,7 @@ export default function CreateRecipe(props) {
         <>
         { errors.healthScore && <p className={styles.error}>{errors.healthScore}</p> }
         </>
-        <div className={styles.horFlex}>
+        <div className={styles.titleAndInput}>
           <label className={styles.subTitle}>Imagen</label>
           <input
             className={styles.input}
@@ -218,26 +206,29 @@ export default function CreateRecipe(props) {
             placeholder="URL de la imagen"
           />
         </div>
-        <div className={styles.horFlex}>
+        <div className={styles.titleAndInput}>
           <label className={styles.subTitle}>Tipos de Dieta</label>
           <select name="diets" onChange={e => handleSelect(e)}>
-            <option hidden>Seleccionar</option>
+            <option hidden value="diets">Seleccionar</option>
             { diets?.map(diet => {
-              return <option key={diet.id} value={diet.id}>{diet.name}</option>
-              })
+              return (
+                <option value={diet.name} key={diet.id}>
+                  {diet.name}
+                </option>
+              )})
             }
           </select>
         </div>
         <div>
-        { selectedDiets?.map(diet => {
+        { input.diets?.map((diet, i) => {
               return (
-                <span key={diet.id} className={styles.p}>
-                  {diet.name}<button name="diets" value={diet.id} onClick={e => handleDelete(e)} className={styles.buttonX}>x</button>
+                <span key={i} className={styles.p}>
+                  {diet}<button name="diets" value={diet} onClick={e => handleDelete(e)} className={styles.buttonX}>x</button>
                 </span>
               )})
-          }
+        }
         </div>
-        <div className={styles.horFlex}>
+        <div className={styles.titleAndInput}>
           <label className={styles.subTitle}>Tipo de Plato</label>
           <select name="dishTypes" onChange={e => handleSelect(e)}>
             <option hidden>Seleccionar</option>
@@ -256,7 +247,7 @@ export default function CreateRecipe(props) {
               )})
             }
         </div>
-        <div className={styles.horFlex}>
+        <div className={styles.titleAndText}>
           <label className={styles.subTitle}>Resumen</label>
           <textarea
             className={styles.textarea}
@@ -272,7 +263,7 @@ export default function CreateRecipe(props) {
         <>
           { errors.summary && <p className={styles.error}>{errors.summary}</p> }
         </>
-        <div className={styles.horFlex}>
+        <div className={styles.titleAndText}>
           <label className={styles.subTitle}>Pasos</label>
           <textarea
             className={styles.textarea}
@@ -286,7 +277,6 @@ export default function CreateRecipe(props) {
           />
         </div>
         <div>
-          <>
           { input.steps?.map((step, i) => {
             return (
               <p key={i} className={styles.p}>
@@ -303,22 +293,19 @@ export default function CreateRecipe(props) {
               </p>
             )})
           }
-          </>
+        </div>
+        <div className={styles.buttons}> 
+          <NavLink to={id ? `/home/${id}` : "/home"}>
+            <button className={styles.button}>{"< Volver"}</button>
+          </NavLink>
           <button type="button" className={styles.button} onClick={e => handleSteps(e)}>
             + Paso
-          </button> 
+          </button>
+          <button className={styles.button} type="submit" disabled={Object.keys(validate(input)).length}>
+            {id ? "Guardar Receta" : "Crear Receta"}
+          </button>
         </div>
-        <button 
-          className={styles.button} 
-          type="submit" 
-          disabled={Object.keys(validate(input)).length}
-        >
-          {id ? "Guardar Receta" : "Crear Receta"}
-        </button>
       </form>
-      <NavLink to={id ? `/home/${id}` : "/home"}>
-        <button className={styles.button}>{"< Volver"}</button>
-      </NavLink>{}
     </div>
     </div>
   );

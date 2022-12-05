@@ -11,7 +11,7 @@
     margin-top: 40px;
     padding: 30px;
     border-radius: 20px;
-    width: 500px;
+    width: 550px;
     height: 550px;
     position: absolute;
     left: 50%;
@@ -19,12 +19,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: left;
 }
 
-.horFlex {
+
+.titleAndInput {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.titleAndText {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
     gap: 30px;
 }
 
@@ -44,6 +55,14 @@
     font-size: 24px;
     padding: 0px;
     margin: 5px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 10px;
 }
 
 .button {
@@ -68,7 +87,7 @@
 }
 
 .input {
-    height: 18px;
+    height: 22px;
     border-radius: 5px;
     border: none;
     width: 190px;

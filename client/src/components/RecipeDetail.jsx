@@ -26,43 +26,32 @@ export default function RecipeDetail(props) {
   return (
     <div className={styles.recipeDetail}>
       <div className={styles.imageAndInfoContainer}>
-        <img
-          src={detail.image ? detail.image : ""}
-          alt=""
-        />
         <div className={styles.sideInfo}>
           <div>
-            <h2 className={styles.title}>{detail.name}</h2>
-            <h2 className={styles.title}>
-              {detail.healthScore} Puntos Saludables
-            </h2>
+            <h2>{detail.name}</h2>
+            <h2>{detail.healthScore} Puntos Saludables</h2>
           </div>
           <div>
-            <div>
-              <h4 className={styles.subTitle}>Tipos de Plato</h4>
-              {detail.dishTypes && <p>{detail.dishTypes.join(", ")}</p>}
-            </div>
-            <div>
-              <h4 className={styles.subTitle}>Tipos de Dieta</h4>
-              {detail.diets && <p>{detail.diets.join(", ")}</p>}
-            </div>
+            <h4>Tipos de Plato</h4>
+            {detail.dishTypes && <p>{detail.dishTypes.join(", ")}</p>}
           </div>
           <div>
-            <h4 className={styles.subTitle}>Resumen</h4>
+            <h4>Tipos de Dieta</h4>
+            {detail.diets && <p>{detail.diets.join(", ")}</p>}
+          </div>
+          <div>
+            <h4>Resumen</h4>
             <p>{detail.summary?.replace(/<[^>]*>/g, "")}</p>
           </div>
         </div>
+        <img src={detail.image ? detail.image : ""} alt="Img Not Found" />
       </div>
-      {/* <div className={styles.steps}>
-        <h4 className={styles.subTitle}>Pasos</h4>
+      <div className={styles.steps}>
+        <h2 className={styles.subTitle}>Procedimiento</h2>
         {detail.steps?.map((step, i) => {
           return (
             <div key={i}>
-              <h3>
-                {detail.steps.length > 1
-                  ? `Paso ${i + 1}: `
-                  : "Procedimiento: "}
-              </h3>
+              <h4>{detail.steps.length > 1 ? `Paso ${i + 1}` : null}</h4>
               <p>{step}</p>
             </div>
           );
@@ -82,7 +71,7 @@ export default function RecipeDetail(props) {
             Borrar
           </button>
         )}
-      </div> */}
+      </div>
     </div>
   );
 }
