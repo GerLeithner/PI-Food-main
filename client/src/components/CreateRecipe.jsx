@@ -188,6 +188,7 @@ export default function CreateRecipe(props) {
             name="healthScore" 
             type="number" 
             value={input.healthScore}
+            placeholder="De 0 a 100 pts"
             onChange={(e) => handleChange(e)} 
           />
         </div>
