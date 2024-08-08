@@ -47,7 +47,7 @@ function dataNormalizer(recipe, status) {
             name: recipe.title,
             summary: recipe.summary,
             healthScore: recipe.healthScore,
-            steps: recipe.analyzedInstructions.length ? recipe.analyzedInstructions[0].steps.map(s => {
+            steps: recipe.analyzedInstructions?.length ? recipe.analyzedInstructions[0].steps.map(s => {
                 return s.step;
             }) : ["not specified"],
             dishTypes: recipe.dishTypes.length ? recipe.dishTypes : ["not specified"],
